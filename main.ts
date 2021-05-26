@@ -75,7 +75,7 @@ basic.forever(function () {
     footPedal1 = Math.map(pins.analogReadPin(AnalogPin.P3), 250, 790, 0, 1023)
     footPedal2 = Math.map(pins.analogReadPin(AnalogPin.P10), 250, 790, 0, 1023)
     enableAdult = pins.digitalReadPin(DigitalPin.P7) + 1
-    enableRC = pins.digitalReadPin(DigitalPin.P7)
+    enableRC = pins.digitalReadPin(DigitalPin.P9)
     direction = pins.digitalReadPin(DigitalPin.P15)
     seatSwitch = pins.digitalReadPin(DigitalPin.P16)
 })
