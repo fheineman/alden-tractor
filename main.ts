@@ -25,8 +25,8 @@ function Stop () {
     pins.digitalWritePin(DigitalPin.P8, 0)
 }
 let enableRC = 0
-let enableAdult = 0
 let footPedal2 = 0
+let enableAdult = 0
 let seatSwitch = 0
 let footPedal1 = 0
 let speed = 0
@@ -53,12 +53,24 @@ basic.forever(function () {
         if (footPedal1 > 50 && seatSwitch == 1) {
             speed = footPedal1
             goForward()
+        } else if (enableAdult == 1 && footPedal2 > 50 && seatSwitch == 1) {
+            speed = footPedal2
+            goForward()
+        } else if (enableRC == 1 && joyV > 550) {
+            speed = Math.map(joyV, 550, 1023, 10, 255)
+            goForward()
         } else {
             Stop()
         }
     } else {
         if (footPedal1 > 50 && seatSwitch == 1) {
             speed = footPedal1
+            goBackward()
+        } else if (enableAdult == 1 && footPedal2 > 50 && seatSwitch == 1) {
+            speed = footPedal2
+            goBackward()
+        } else if (enableRC == 1 && joyV < 450) {
+            speed = Math.map(joyV, 0, 450, 255, 10)
             goBackward()
         } else {
             Stop()
@@ -78,35 +90,4 @@ basic.forever(function () {
     enableRC = pins.digitalReadPin(DigitalPin.P9)
     direction = pins.digitalReadPin(DigitalPin.P15)
     seatSwitch = pins.digitalReadPin(DigitalPin.P16)
-})
-basic.forever(function () {
-    if (enableRC == 1) {
-        if (joyV > 550) {
-            speed = Math.map(joyV, 550, 1023, 10, 255)
-            goForward()
-        } else if (joyV < 450) {
-            speed = Math.map(joyV, 0, 450, 255, 10)
-            goBackward()
-        }
-    }
-})
-basic.forever(function () {
-    if (enableAdult == 1 && pins.digitalReadPin(DigitalPin.P15) != direction && footPedal2 < 50) {
-        direction = pins.digitalReadPin(DigitalPin.P15)
-    }
-    if (direction == 1) {
-        if (footPedal2 > 50 && seatSwitch == 1) {
-            speed = footPedal2
-            goForward()
-        } else {
-            Stop()
-        }
-    } else {
-        if (footPedal2 > 50 && seatSwitch == 1) {
-            speed = footPedal2
-            goBackward()
-        } else {
-            Stop()
-        }
-    }
 })
