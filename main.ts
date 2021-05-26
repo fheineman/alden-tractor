@@ -26,6 +26,7 @@ function Stop () {
 }
 let enableRC = 0
 let enableAdult = 0
+let footPedal2 = 0
 let seatSwitch = 0
 let footPedal1 = 0
 let speed = 0
@@ -72,7 +73,8 @@ basic.forever(function () {
 })
 basic.forever(function () {
     footPedal1 = Math.map(pins.analogReadPin(AnalogPin.P3), 250, 790, 0, 1023)
-    enableAdult = pins.digitalReadPin(DigitalPin.P7)
+    footPedal2 = Math.map(pins.analogReadPin(AnalogPin.P10), 250, 790, 0, 1023)
+    enableAdult = pins.digitalReadPin(DigitalPin.P7) + 1
     enableRC = pins.digitalReadPin(DigitalPin.P7)
     direction = pins.digitalReadPin(DigitalPin.P15)
     seatSwitch = pins.digitalReadPin(DigitalPin.P16)
@@ -85,6 +87,26 @@ basic.forever(function () {
         } else if (joyV < 450) {
             speed = Math.map(joyV, 0, 450, 255, 10)
             goBackward()
+        }
+    }
+})
+basic.forever(function () {
+    if (enableAdult == 1 && pins.digitalReadPin(DigitalPin.P15) != direction && footPedal2 < 50) {
+        direction = pins.digitalReadPin(DigitalPin.P15)
+    }
+    if (direction == 1) {
+        if (footPedal2 > 50 && seatSwitch == 1) {
+            speed = footPedal2
+            goForward()
+        } else {
+            Stop()
+        }
+    } else {
+        if (footPedal2 > 50 && seatSwitch == 1) {
+            speed = footPedal2
+            goBackward()
+        } else {
+            Stop()
         }
     }
 })
